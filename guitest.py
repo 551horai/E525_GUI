@@ -39,6 +39,8 @@ class ButtonBoxWidget(QtGui.QWidget):
 		event_edit = QtGui.QLineEdit()
 		time_edit = QtGui.QLineEdit()
 
+		Run = QtGui.QPushButton("Run", self)
+
 		ch = range(16)
 		for i in range(16):
 			ch[i] = QtGui.QLabel("ch%d" %i, self)
@@ -65,19 +67,41 @@ class ButtonBoxWidget(QtGui.QWidget):
 		layout.addWidget(combo_beam, 23, 0)	
 		layout.addWidget(combo_RI, 23, 1)
 		layout.addWidget(check_BG, 23, 2)
+		layout.addWidget(Run, 24, 3)
 
 		self.setLayout(layout)
 		
-		self.setGeometry(500, 500, 350, 400)
+		self.setGeometry(100, 200, 300, 400)
 		self.show()
 
-class Window(QtGui.QWidget):
+
+	def closeEvent(self, event):
+		reply = QtGui.QMessageBox.question(self, "Message", "Are you sure to quit?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+		if reply == QtGui.QMessageBox.Yes:
+			event.accept()
+		else:
+			event.ignore()
+
+class Running(QtGui.QWidget):
 	def __init__(self):
-		super(Window, self).__init__()
+		super(Running, self).__init__()
 		self.initUI()
         
 	def initUI(self):
-		hbox = QtGui.QHBoxLayout(self)
+		info = QtGui.QLabel("#Run information")
+
+		layout = QtGui.QGridLayout()
+		layout.addWidget(info, 1,0)
+		self.setLayout(layout)
+		self.setGeometry(510,200,500,500)
+		self.show()
+
+	def start_timer(self):
+		if self.count > 0:
+			self.timer.start()
+
+	def stop_timer(self):
+		self.timer.stop()
 		
 	def closeEvent(self, event):
 		reply = QtGui.QMessageBox.question(self, "Message", "Are you sure to quit?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
@@ -105,7 +129,9 @@ def main():
 	#self.setGeometry(300, 300, 700 ,500)
 	#self.setWindowTitle("test")
 	#self.show()
-	ex = ButtonBoxWidget()
+	btn = ButtonBoxWidget()
+	running = Running()
+	#ButtonBoxWidget.Run.clicked.connect(Running)
 	sys.exit(app.exec_())
 
 if __name__ == "__main__":
